@@ -35,7 +35,8 @@ class MenuActions implements ActionListener {
 		} else if(ac.equals("exit")) {
 			System.exit(0);
 		} else if(ac.equals("about")) {
-			JOptionPane.showMessageDialog(parent,"A worm game based on\nMikko's Simple GUI Framework\n(C) Mikko Nummelin, 2009.","About MSGF",JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(parent,"A worm game based on\nMikko's Simple GUI Framework\n(C) Mikko Nummelin, 2009.",
+					"About Worm",JOptionPane.INFORMATION_MESSAGE);
 		} else {
 			System.err.println("Not implemented: "+ac);
 		}

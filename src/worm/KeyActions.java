@@ -41,7 +41,7 @@ class KeyActions implements KeyListener {
 	}
 
 	public void keyReleased(KeyEvent e) {
-		left=up=right=down=false;
+		// left=up=right=down=false;
 	}
 
 	public void keyTyped(KeyEvent e) {

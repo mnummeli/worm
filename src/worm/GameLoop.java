@@ -1,5 +1,7 @@
 package worm;
 
+import java.util.*;
+
 public class GameLoop extends Thread {
 	
 	public GameLoop(Worm gui, MenuActions menuActions, KeyActions keyActions) {
@@ -9,7 +11,11 @@ public class GameLoop extends Thread {
 	}
 	
 	public void run() {
+		rand=new Random(Calendar.getInstance().getTimeInMillis());
+		wormNodes=new LinkedList<Coordinates>();
+		wormNodes.addFirst(new Coordinates(0x10,0x10));
 		initScreenData();
+		setNewFruit();
 		gui.forceUpdateView();
 		while(true) {
 			try {
@@ -17,17 +23,72 @@ public class GameLoop extends Thread {
 			} catch (InterruptedException iex) {}
 			copyPrevScreenData();
 			setWormDirection();
-			// moveWorm();
+			moveWorm();
 			gui.updateView();
 		}
 	}
 
-	/*
 	private void moveWorm() {
-		checkCollision();
-		checkEatFruit();
+		Coordinates prevHead, newHead;
+		prevHead=wormNodes.getFirst();
+		if(screenData[prevHead.y][prevHead.x]!='b') {
+			screenData[prevHead.y][prevHead.x]='w';
+		}
+		switch(wormDirection) {
+		case RIGHT:
+			newHead=new Coordinates(prevHead.x+1,prevHead.y);
+			break;
+		case UP:
+			newHead=new Coordinates(prevHead.x,prevHead.y-1);
+			break;
+		case LEFT:
+			newHead=new Coordinates(prevHead.x-1,prevHead.y);
+			break;
+		case DOWN:
+			newHead=new Coordinates(prevHead.x,prevHead.y+1);
+			break;
+		default:
+			newHead=new Coordinates(prevHead.x,prevHead.y);
+			break;
+		}
+		wormNodes.addFirst(newHead);
+		switch(screenData[newHead.y][newHead.x]) {
+		case '#':
+		case 'w':
+			System.exit(0); // Collision
+		case 'f':
+			lengthen=2;
+			screenData[newHead.y][newHead.x]='b';
+			setNewFruit();
+			break;
+		case 'b':
+			lengthen=1;
+			screenData[newHead.y][newHead.x]='w';
+			setNewFruit();
+			break;
+		}
+		if(screenData[newHead.y][newHead.x]!='b') {
+			screenData[newHead.y][newHead.x]='h';
+		}
+		if(lengthen==0) {
+			Coordinates prevTail=wormNodes.removeLast();
+			screenData[prevTail.y][prevTail.x]=' ';
+		} else {
+			lengthen--;
+		}
 	}
-	*/
+	
+	private void setNewFruit() {
+		char prevTry='#';
+		while(prevTry!=' ') {
+			Coordinates newFruitLoc=
+				new Coordinates(rand.nextInt(0x20),rand.nextInt(0x20));
+			prevTry=screenData[newFruitLoc.y][newFruitLoc.x];
+			if(prevTry==' ') {
+				screenData[newFruitLoc.y][newFruitLoc.x]='f';
+			}
+		}
+	}
 
 	private void initScreenData() {
 		for(int i=0;i<0x20;i++) {
@@ -37,6 +98,15 @@ public class GameLoop extends Thread {
 				} else {
 					screenData[i][j]=' ';
 				}
+			}
+		}
+		Iterator<Coordinates> iter=wormNodes.listIterator();
+		if(iter.hasNext()) {
+			Coordinates c=iter.next();
+			screenData[c.y][c.x]='h';
+			while(iter.hasNext()) {
+				c=iter.next();
+				screenData[c.y][c.x]='w';
 			}
 		}
 	}
@@ -73,6 +143,9 @@ public class GameLoop extends Thread {
 	private int wormDirection=RIGHT;
 	char[][] screenData=new char[0x20][0x20];
 	char[][] prevScreenData=new char[0x20][0x20];
+	private LinkedList<Coordinates> wormNodes;
+	private Random rand;
+	private int lengthen=0;
 
 	class Coordinates {
 		public int x,y;

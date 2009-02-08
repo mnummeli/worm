@@ -61,6 +61,12 @@ public class Worm extends JFrame {
 		 * Setting just one panel into the GUI is an arbitrary choice
 		 * as is the size of the panel.
 		 */
+		panel = new JPanel() {
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+				updateViewSync(g,true);
+			}
+		};
 		panel.setPreferredSize(new Dimension(0x200,0x200));
 		panel.setBackground(Color.BLACK);
 		addKeyListener(keyActions);
@@ -78,7 +84,8 @@ public class Worm extends JFrame {
 	void updateView() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				updateViewSync(false);
+				Graphics g=panel.getGraphics();
+				updateViewSync(g,false);
 			}
 		});
 	}
@@ -86,24 +93,40 @@ public class Worm extends JFrame {
 	void forceUpdateView() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				updateViewSync(true);
+				Graphics g=panel.getGraphics();
+				updateViewSync(g,true);
 			}
 		});
 	}
 	
-	private void updateViewSync(boolean force) {
-		Graphics g=panel.getGraphics();
+	private void updateViewSync(Graphics g, boolean force) {
 		for(int i=0;i<0x20;i++) {
 			for(int j=0;j<0x20;j++) {
 				if(force||(gl.screenData[i][j]!=gl.prevScreenData[i][j])) {
 					switch(gl.screenData[i][j]) {
 					case ' ':
 						g.setColor(Color.BLACK);
-						g.fillRect(0x10*i,0x10*j,0x10,0x10);
+						g.fillRect(0x10*j,0x10*i,0x10,0x10);
 						break;
 					case '#':
 						g.setColor(Color.RED);
-						g.fillRect(0x10*i+1,0x10*j+1,0xe,0xe);
+						g.fillRect(0x10*j+1,0x10*i+1,0xe,0xe);
+						break;
+					case 'h':
+						g.setColor(new Color(0x007f00));
+						g.fillOval(0x10*j+1,0x10*i+1,0xe,0xe);
+						break;
+					case 'w':
+						g.setColor(Color.GREEN);
+						g.fillOval(0x10*j+1,0x10*i+1,0xe,0xe);
+						break;
+					case 'f':
+						g.setColor(Color.CYAN);
+						g.fillOval(0x10*j+1,0x10*i+1,0xe,0xe);
+						break;
+					case 'b':
+						g.setColor(Color.BLUE);
+						g.fillOval(0x10*j+1,0x10*i+1,0xe,0xe);
 						break;
 					}
 				}
@@ -115,7 +138,7 @@ public class Worm extends JFrame {
 	private GameLoop gl;
 
 	/* The central area panel */
-	private JPanel panel = new JPanel();
+	private JPanel panel;
 
 	/* Menu bar */
 	private JMenuBar  menuBar    = new JMenuBar();
