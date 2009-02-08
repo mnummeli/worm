@@ -1,0 +1,25 @@
+<project name="Worm" default="dist" basedir=".">
+	<property name="src" location="src/"/>
+	<property name="images" location="${src}/images"/>
+	<property name="build" location="build/"/>
+	<property name="dist" location="dist/"/>
+	<target name="init">
+		<tstamp/>
+		<mkdir dir="${build}"/>
+		<mkdir dir="${build}/images"/>
+	</target>
+	<target name="compile" depends="init">
+		<javac srcdir="${src}" destdir="${build}"/>
+		<copy todir="${build}/images">
+		    <fileset dir="${images}"/>
+		</copy>
+	</target>
+	<target name="dist" depends="compile">
+		<mkdir dir="${dist}"/>
+		<jar jarfile="${dist}/Worm-${DSTAMP}.jar" basedir="${build}" manifest="${src}/manifest.txt"/>
+	</target>
+	<target name="clean">
+		<delete dir="${build}"/>
+		<delete dir="${dist}"/>
+	</target>
+</project>
