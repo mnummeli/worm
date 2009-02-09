@@ -102,7 +102,8 @@ public class Worm extends JFrame {
 	private void updateViewSync(Graphics g, boolean force) {
 		for(int i=0;i<0x20;i++) {
 			for(int j=0;j<0x20;j++) {
-				if(force||(gl.screenData[i][j]!=gl.prevScreenData[i][j])) {
+				if(force||(gl.screenData[i][j]=='b')||
+						(gl.screenData[i][j]!=gl.prevScreenData[i][j])) {
 					switch(gl.screenData[i][j]) {
 					case ' ':
 						g.setColor(Color.BLACK);
@@ -125,7 +126,7 @@ public class Worm extends JFrame {
 						g.fillOval(0x10*j+1,0x10*i+1,0xe,0xe);
 						break;
 					case 'b':
-						g.setColor(Color.BLUE);
+						g.setColor(bonusFruitColors[gl.cycles%7]);
 						g.fillOval(0x10*j+1,0x10*i+1,0xe,0xe);
 						break;
 					}
@@ -136,6 +137,9 @@ public class Worm extends JFrame {
 	
 	private static Worm sg = new Worm();
 	private GameLoop gl;
+	
+	private Color[] bonusFruitColors={Color.RED,Color.ORANGE,Color.YELLOW,
+			Color.GREEN,Color.CYAN,Color.BLUE,Color.MAGENTA};
 
 	/* The central area panel */
 	private JPanel panel;

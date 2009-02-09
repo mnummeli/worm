@@ -11,6 +11,7 @@ public class GameLoop extends Thread {
 	}
 	
 	public void run() {
+		cycles=0;
 		rand=new Random(Calendar.getInstance().getTimeInMillis());
 		wormNodes=new LinkedList<Coordinates>();
 		wormNodes.addFirst(new Coordinates(0x10,0x10));
@@ -25,6 +26,7 @@ public class GameLoop extends Thread {
 			setWormDirection();
 			moveWorm();
 			gui.updateView();
+			cycles++;
 		}
 	}
 
@@ -121,15 +123,25 @@ public class GameLoop extends Thread {
 
 	private void setWormDirection() {
 		if(keyActions.right) {
-			wormDirection=RIGHT;
+			if(wormDirection!=LEFT) {
+				wormDirection=RIGHT;
+			}
 		} else if(keyActions.up) {
-			wormDirection=UP;
+			if(wormDirection!=DOWN) {
+				wormDirection=UP;
+			}
 		} else if(keyActions.left) {
-			wormDirection=LEFT;
+			if(wormDirection!=RIGHT) {
+				wormDirection=LEFT;
+			}
 		} else if(keyActions.down) {
-			wormDirection=DOWN;
+			if(wormDirection!=UP) {
+				wormDirection=DOWN;
+			}
 		}
 	}
+	
+	int cycles;
 
 	private Worm gui;
 	private MenuActions menuActions;
