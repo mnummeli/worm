@@ -37,7 +37,8 @@ class KeyActions implements KeyListener {
 			down=true;
 			left=up=right=false;
 		} else if(e.getKeyText(e.getKeyCode()).equals("Space")) {
-			if((gl.state==GameLoop.START)||(gl.state==GameLoop.PAUSED)) {
+			if((gl.state==GameLoop.START)||(gl.state==GameLoop.GAME_OVER)||
+					(gl.state==GameLoop.PAUSED)) {
 				gl.state=GameLoop.PLAYING;
 			} else if(gl.state==GameLoop.PLAYING) {
 				gl.state=GameLoop.PAUSED;

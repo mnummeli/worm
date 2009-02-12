@@ -33,6 +33,13 @@ public class Worm extends JFrame {
 		} else {
 			System.err.println("Icon file not found.");
 		}
+		java.net.URL brickURL = getClass().getResource("/images/brick.jpg");
+		if (brickURL != null) {
+		    ImageIcon brick = new ImageIcon(brickURL);
+		    brickImage=brick.getImage();
+		} else {
+			System.err.println("Brick image file not found.");
+		}
 
 		setTitle("Worm - (C) Mikko Nummelin, 2009");
 		setLayout(new BorderLayout());
@@ -163,8 +170,9 @@ public class Worm extends JFrame {
 						g.fillRect(0x10*j,0x10*i,0x10,0x10);
 						break;
 					case '#':
-						g.setColor(Color.RED);
-						g.fillRect(0x10*j+1,0x10*i+1,0xe,0xe);
+						/* g.setColor(Color.RED);
+						g.fillRect(0x10*j+1,0x10*i+1,0xe,0xe); */
+						g.drawImage(brickImage,0x10*j,0x10*i,panel);
 						break;
 					case 'h':
 						g.setColor(new Color(0x007f00));
@@ -193,6 +201,8 @@ public class Worm extends JFrame {
 	
 	private Color[] bonusFruitColors={Color.RED,Color.ORANGE,Color.YELLOW,
 			Color.GREEN,Color.CYAN,Color.BLUE,Color.MAGENTA};
+	
+	private Image brickImage;
 
 	/* The central area panel */
 	private JPanel panel;

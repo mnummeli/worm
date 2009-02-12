@@ -19,6 +19,8 @@ public class GameLoop extends Thread {
 	}
 	
 	public void run() {
+		wormDirection=RIGHT;
+		keyActions.right=keyActions.left=keyActions.up=keyActions.down=false;
 		while((state==START)||(state==GAME_OVER)) {
 			gui.updateStatusPanels();
 			synchronized(this) {
@@ -42,9 +44,11 @@ public class GameLoop extends Thread {
 						wait();
 					} catch (InterruptedException iex) {}
 				}
+				gui.updateStatusPanels();
 			}
 			try {
-				Thread.sleep(100);
+				int delayTime=(int)(300*Math.exp(-Math.log(2)*score/30));
+				Thread.sleep(delayTime);
 			} catch (InterruptedException iex) {}
 			copyPrevScreenData();
 			setWormDirection();
@@ -123,12 +127,34 @@ public class GameLoop extends Thread {
 	private void initScreenData() {
 		for(int i=0;i<0x20;i++) {
 			for(int j=0;j<0x20;j++) {
-				if((i==0)||(i==0x1f)||(j==0)||(j==0x1f)) {
+				if((i<=1)||(i>=0x1e)||(j<=1)||(j>=0x1e)) {
 					screenData[i][j]='#';
 				} else {
 					screenData[i][j]=' ';
 				}
 			}
+		}
+		for(int i=2;i<7;i++) {
+			screenData[0x9][i]='#';
+			screenData[0xa][i]='#';
+			screenData[0x15][i]='#';
+			screenData[0x16][i]='#';
+			screenData[0x9][0x1f-i]='#';
+			screenData[0xa][0x1f-i]='#';
+			screenData[0x15][0x1f-i]='#';
+			screenData[0x16][0x1f-i]='#';
+			screenData[i][0x9]='#';
+			screenData[i][0xa]='#';
+			screenData[i][0x15]='#';
+			screenData[i][0x16]='#';
+			screenData[0x1f-i][0x9]='#';
+			screenData[0x1f-i][0xa]='#';
+			screenData[0x1f-i][0x15]='#';
+			screenData[0x1f-i][0x16]='#';
+		}
+		for(int i=0;i<6;i++) {
+			screenData[0x0d+i][0x09]='#';
+			screenData[0x0d+i][0x0a]='#';
 		}
 		Iterator<Coordinates> iter=wormNodes.listIterator();
 		if(iter.hasNext()) {
@@ -180,7 +206,7 @@ public class GameLoop extends Thread {
 	private final int LEFT  = 2;
 	private final int DOWN  = 3;
 	
-	private int wormDirection=RIGHT;
+	private int wormDirection;
 	char[][] screenData=new char[0x20][0x20];
 	char[][] prevScreenData=new char[0x20][0x20];
 	private LinkedList<Coordinates> wormNodes;
