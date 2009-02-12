@@ -21,6 +21,7 @@ public class Worm extends JFrame {
 			System.exit(1);
 		}
 		sg.gl=new GameLoop(sg,sg.menuActions,sg.keyActions);
+		sg.keyActions.gl=sg.gl;
 		sg.gl.start();
 	}
 
@@ -34,6 +35,7 @@ public class Worm extends JFrame {
 		}
 
 		setTitle("Worm - (C) Mikko Nummelin, 2009");
+		setLayout(new BorderLayout());
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setJMenuBar(menuBar);
 
@@ -57,20 +59,29 @@ public class Worm extends JFrame {
 			}
 		}
 
-		/*
-		 * Setting just one panel into the GUI is an arbitrary choice
-		 * as is the size of the panel.
-		 */
+		JPanel gamePanel=new JPanel(new BorderLayout());
+		gamePanel.setPreferredSize(new Dimension(0x200,0x210));
+		infoLabel=new JLabel();
+		scoreLabel=new JLabel();
+		JPanel topPanel=new JPanel(new BorderLayout());
+		topPanel.add(infoLabel,BorderLayout.WEST);
+		topPanel.add(scoreLabel,BorderLayout.EAST);
+		gamePanel.add(topPanel,BorderLayout.NORTH);	
+		
+		/* The game area */
 		panel = new JPanel() {
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
 				updateViewSync(g,true);
+				updateStatusPanelsSync();
 			}
 		};
+		
 		panel.setPreferredSize(new Dimension(0x200,0x200));
 		panel.setBackground(Color.BLACK);
 		addKeyListener(keyActions);
-		add(panel);
+		gamePanel.add(panel,BorderLayout.SOUTH);
+		add(gamePanel);
 
 		/* As small GUI as possible to contain the inside components */
 		pack();
@@ -79,6 +90,40 @@ public class Worm extends JFrame {
 		setResizable(false);
 
 		setVisible(true);
+	}
+	
+	void updateStatusPanels() {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				updateStatusPanelsSync();
+			}
+		});
+	}
+	
+	void drawGameOver() {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				Graphics g=panel.getGraphics();
+				g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,0x20));
+				g.setColor(Color.WHITE);
+				g.drawString("Game over",0xa8,0xf0);
+			}
+		});
+	}
+	
+	private void updateStatusPanelsSync() {
+		switch(gl.state) {
+		case GameLoop.START:
+			infoLabel.setText("      Press SPACE to start.      ");
+			break;
+		case GameLoop.PLAYING:
+			infoLabel.setText("Playing ... press SPACE to pause.");
+			break;
+		case GameLoop.PAUSED:
+			infoLabel.setText("Paused. Press SPACE to continue. ");
+			break;
+		}
+		scoreLabel.setText("Score: "+gl.score+"                 ");
 	}
 	
 	void updateView() {
@@ -156,6 +201,8 @@ public class Worm extends JFrame {
 	/* Help menu */
 	private JMenu     helpMenu   = new JMenu("Help");
 	private JMenuItem aboutItem  = new JMenuItem("About");
+	
+	private JLabel infoLabel, scoreLabel;
 
 	/* Action and key listeners are implemented in separate classes */
 	private MenuActions menuActions = new MenuActions(this);

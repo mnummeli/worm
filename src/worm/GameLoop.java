@@ -4,6 +4,13 @@ import java.util.*;
 
 public class GameLoop extends Thread {
 	
+	/* Game state variables */
+	static final int START=0;
+	static final int PLAYING=1;
+	static final int PAUSED=2;
+	int state=START;
+	int score;
+	
 	public GameLoop(Worm gui, MenuActions menuActions, KeyActions keyActions) {
 		this.gui=gui;
 		this.menuActions=menuActions;
@@ -11,7 +18,15 @@ public class GameLoop extends Thread {
 	}
 	
 	public void run() {
-		cycles=0;
+		while(state==START) {
+			gui.updateStatusPanels();
+			synchronized(this) {
+				try {
+					wait();
+				} catch (InterruptedException iex) {}
+			}
+		}
+		cycles=0; score=0; gui.updateStatusPanels();
 		rand=new Random(Calendar.getInstance().getTimeInMillis());
 		wormNodes=new LinkedList<Coordinates>();
 		wormNodes.addFirst(new Coordinates(0x10,0x10));
@@ -19,6 +34,14 @@ public class GameLoop extends Thread {
 		setNewFruit();
 		gui.forceUpdateView();
 		while(true) {
+			while(state==PAUSED) {
+				gui.updateStatusPanels();
+				synchronized(this) {
+					try {
+						wait();
+					} catch (InterruptedException iex) {}
+				}
+			}
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException iex) {}
@@ -57,15 +80,19 @@ public class GameLoop extends Thread {
 		switch(screenData[newHead.y][newHead.x]) {
 		case '#':
 		case 'w':
-			System.exit(0); // Collision
+			gui.drawGameOver();
+			state=START;
+			run();
 		case 'f':
 			lengthen=2;
 			screenData[newHead.y][newHead.x]='b';
+			score++; gui.updateStatusPanels();
 			setNewFruit();
 			break;
 		case 'b':
-			lengthen=1;
+			lengthen=3;
 			screenData[newHead.y][newHead.x]='w';
+			score++; gui.updateStatusPanels();
 			setNewFruit();
 			break;
 		}

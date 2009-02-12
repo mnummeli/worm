@@ -10,6 +10,7 @@ import javax.swing.*;
  */
 class KeyActions implements KeyListener {
 	private JFrame parent;
+	GameLoop gl;
 	boolean left  = false;
 	boolean up    = false;
 	boolean right = false;
@@ -32,9 +33,18 @@ class KeyActions implements KeyListener {
 		} else if(e.getKeyText(e.getKeyCode()).equals("Right")) {
 			right=true;
 			left=up=down=false;
-		}  else if(e.getKeyText(e.getKeyCode()).equals("Down")) {
+		} else if(e.getKeyText(e.getKeyCode()).equals("Down")) {
 			down=true;
 			left=up=right=false;
+		} else if(e.getKeyText(e.getKeyCode()).equals("Space")) {
+			if((gl.state==GameLoop.START)||(gl.state==GameLoop.PAUSED)) {
+				gl.state=GameLoop.PLAYING;
+			} else if(gl.state==GameLoop.PLAYING) {
+				gl.state=GameLoop.PAUSED;
+			}
+			synchronized(gl) {
+				gl.notifyAll();
+			}
 		} else {
 			System.out.println(e);
 		}
