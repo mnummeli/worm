@@ -74,6 +74,9 @@ public class Worm extends JFrame {
 				super.paintComponent(g);
 				updateViewSync(g,true);
 				updateStatusPanelsSync();
+				if((gl!=null)&&(gl.state==GameLoop.GAME_OVER)) {
+					drawGameOverSync();
+				}
 			}
 		};
 		
@@ -92,6 +95,21 @@ public class Worm extends JFrame {
 		setVisible(true);
 	}
 	
+	void drawGameOver() {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				drawGameOverSync();
+			}
+		});
+	}
+	
+	private void drawGameOverSync() {
+		Graphics g=panel.getGraphics();
+		g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,0x20));
+		g.setColor(Color.WHITE);
+		g.drawString("Game over",0xa8,0xf0);
+	}
+	
 	void updateStatusPanels() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -100,20 +118,10 @@ public class Worm extends JFrame {
 		});
 	}
 	
-	void drawGameOver() {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				Graphics g=panel.getGraphics();
-				g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,0x20));
-				g.setColor(Color.WHITE);
-				g.drawString("Game over",0xa8,0xf0);
-			}
-		});
-	}
-	
 	private void updateStatusPanelsSync() {
 		switch(gl.state) {
 		case GameLoop.START:
+		case GameLoop.GAME_OVER:
 			infoLabel.setText("      Press SPACE to start.      ");
 			break;
 		case GameLoop.PLAYING:

@@ -8,6 +8,7 @@ public class GameLoop extends Thread {
 	static final int START=0;
 	static final int PLAYING=1;
 	static final int PAUSED=2;
+	static final int GAME_OVER=3;
 	int state=START;
 	int score;
 	
@@ -18,7 +19,7 @@ public class GameLoop extends Thread {
 	}
 	
 	public void run() {
-		while(state==START) {
+		while((state==START)||(state==GAME_OVER)) {
 			gui.updateStatusPanels();
 			synchronized(this) {
 				try {
@@ -81,7 +82,7 @@ public class GameLoop extends Thread {
 		case '#':
 		case 'w':
 			gui.drawGameOver();
-			state=START;
+			state=GAME_OVER;
 			run();
 		case 'f':
 			lengthen=2;
