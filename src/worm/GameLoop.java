@@ -10,12 +10,13 @@ public class GameLoop extends Thread {
 	static final int PAUSED=2;
 	static final int GAME_OVER=3;
 	int state=START;
-	int score;
+	int score, highScore;
 	
 	public GameLoop(Worm gui, MenuActions menuActions, KeyActions keyActions) {
 		this.gui=gui;
 		this.menuActions=menuActions;
 		this.keyActions=keyActions;
+		highScore=0;
 	}
 	
 	public void run() {
@@ -53,6 +54,9 @@ public class GameLoop extends Thread {
 			copyPrevScreenData();
 			setWormDirection();
 			moveWorm();
+			if(highScore<score) {
+				highScore=score;
+			}
 			gui.updateView();
 			cycles++;
 		}

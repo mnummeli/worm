@@ -67,12 +67,21 @@ public class Worm extends JFrame {
 		}
 
 		JPanel gamePanel=new JPanel(new BorderLayout());
-		gamePanel.setPreferredSize(new Dimension(0x200,0x210));
-		infoLabel=new JLabel();
-		scoreLabel=new JLabel();
+		gamePanel.setPreferredSize(new Dimension(0x200,0x220));
+		infoPanel=new JPanel(new BorderLayout());
+		infoPanel.setPreferredSize(new Dimension(0x100,0x20));
+		infoPanel.add(infoLabel=new JLabel(),BorderLayout.CENTER);
+		scorePanel=new JPanel(new BorderLayout());
+		scorePanel.setPreferredSize(new Dimension(0x80,0x20));
+		scorePanel.add(scoreLabel=new JLabel(),BorderLayout.CENTER);
+		highScorePanel=new JPanel(new BorderLayout());
+		highScorePanel.setPreferredSize(new Dimension(0x80,0x20));
+		highScorePanel.add(highScoreLabel=new JLabel(),BorderLayout.CENTER);
 		JPanel topPanel=new JPanel(new BorderLayout());
-		topPanel.add(infoLabel,BorderLayout.WEST);
-		topPanel.add(scoreLabel,BorderLayout.EAST);
+		topPanel.setPreferredSize(new Dimension(0x200,0x20));
+		topPanel.add(infoPanel,BorderLayout.WEST);
+		topPanel.add(scorePanel,BorderLayout.CENTER);
+		topPanel.add(highScorePanel,BorderLayout.EAST);
 		gamePanel.add(topPanel,BorderLayout.NORTH);	
 		
 		/* The game area */
@@ -114,7 +123,7 @@ public class Worm extends JFrame {
 		Graphics g=panel.getGraphics();
 		g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,0x20));
 		g.setColor(Color.WHITE);
-		g.drawString("Game over",0xa8,0xf0);
+		g.drawString("Game over",0xb8,0x100);
 	}
 	
 	void updateStatusPanels() {
@@ -129,16 +138,17 @@ public class Worm extends JFrame {
 		switch(gl.state) {
 		case GameLoop.START:
 		case GameLoop.GAME_OVER:
-			infoLabel.setText("      Press SPACE to start.      ");
+			infoLabel.setText("Press SPACE to start.");
 			break;
 		case GameLoop.PLAYING:
 			infoLabel.setText("Playing ... press SPACE to pause.");
 			break;
 		case GameLoop.PAUSED:
-			infoLabel.setText("Paused. Press SPACE to continue. ");
+			infoLabel.setText("Paused. Press SPACE to continue.");
 			break;
 		}
-		scoreLabel.setText("Score: "+gl.score+"                 ");
+		scoreLabel.setText("Score: "+gl.score);
+		highScoreLabel.setText("High score: "+gl.highScore);
 	}
 	
 	void updateView() {
@@ -220,7 +230,8 @@ public class Worm extends JFrame {
 	private JMenu     helpMenu   = new JMenu("Help");
 	private JMenuItem aboutItem  = new JMenuItem("About");
 	
-	private JLabel infoLabel, scoreLabel;
+	private JPanel infoPanel, scorePanel, highScorePanel;
+	private JLabel infoLabel, scoreLabel, highScoreLabel;
 
 	/* Action and key listeners are implemented in separate classes */
 	private MenuActions menuActions = new MenuActions(this);
