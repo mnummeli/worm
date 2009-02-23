@@ -3,21 +3,33 @@
 	<property name="images" location="${src}/images"/>
 	<property name="build" location="build/"/>
 	<property name="dist" location="dist/"/>
+	<property name="doc" location="doc/"/>
+	<property name="api" location="${doc}/api/"/>
+
+	<!-- Creates the build and API directories if needed -->
 	<target name="init">
 		<tstamp/>
 		<mkdir dir="${build}"/>
-		<mkdir dir="${build}/images"/>
+		<mkdir dir="${api}"/>
 	</target>
+
 	<target name="compile" depends="init">
 		<javac srcdir="${src}" destdir="${build}"/>
 		<copy todir="${build}/images">
 		    <fileset dir="${images}"/>
 		</copy>
 	</target>
-	<target name="dist" depends="compile">
+
+	<!-- Creates or updates the JavaDoc documentation -->
+	<target name="javadoc" depends="init">
+		<javadoc sourcepath="${src}" destdir="${api}"/>
+	</target>
+
+	<target name="dist" depends="compile,javadoc">
 		<mkdir dir="${dist}"/>
 		<jar jarfile="${dist}/Worm-${DSTAMP}.jar" basedir="${build}" manifest="${src}/manifest.txt"/>
 	</target>
+
 	<target name="clean">
 		<delete dir="${build}"/>
 		<delete dir="${dist}"/>
