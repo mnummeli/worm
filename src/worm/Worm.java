@@ -183,12 +183,16 @@ public class Worm extends JFrame {
 	 * Forces update of the whole view.
 	 */
 	void forceUpdateView() {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				Graphics g=panel.getGraphics();
-				updateViewSync(g,true);
-			}
-		});
+		try {
+			SwingUtilities.invokeAndWait(new Runnable() {
+				public void run() {
+					Graphics g=panel.getGraphics();
+					updateViewSync(g,true);
+				}
+			});
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 	
 	private void updateViewSync(Graphics g, boolean force) {

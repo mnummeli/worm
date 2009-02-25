@@ -29,6 +29,9 @@ public class GameLoop extends Thread {
 		this.menuActions=menuActions;
 		this.keyActions=keyActions;
 
+		/* Default high score. */
+		highScore=0;
+
 		/* High score is load from file named "worm.highscore.xml"
 		 * in users home directory */
 		String homeDirectory=System.getProperty("user.home");
@@ -40,7 +43,8 @@ public class GameLoop extends Thread {
 			fis.close();
 			highScore=Integer.parseInt(props.getProperty("worm.highscore"));
 		} catch(Exception ex) {
-			highScore=0;
+			System.err.println("WARNING: No high score file found, "+
+				"high score counter was reset to zero.");
 		}
 	}
 
