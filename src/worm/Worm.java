@@ -1,3 +1,8 @@
+/*
+ * A simple worm game, graphical user interface (GUI) routines.
+ * (C) 2009, Mikko Nummelin
+ */
+
 package worm;
 
 import java.awt.*;
@@ -9,6 +14,11 @@ import javax.swing.*;
  */
 public class Worm extends JFrame {
 
+	/**
+	 * The game entry point. Creates the GUI in event dispatcher thread
+	 * and creates game loop as new thread.
+	 * @param args	Not in use.
+	 */
 	public static void main(String[] args) {
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {
@@ -111,6 +121,9 @@ public class Worm extends JFrame {
 		setVisible(true);
 	}
 	
+	/**
+	 * Draws "GAME OVER"-text
+	 */
 	void drawGameOver() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -126,6 +139,9 @@ public class Worm extends JFrame {
 		g.drawString("Game over",0xb8,0x100);
 	}
 	
+	/**
+	 * Updates status panels, i.e. when score increases or state changes.
+	 */
 	void updateStatusPanels() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -151,6 +167,9 @@ public class Worm extends JFrame {
 		highScoreLabel.setText("High score: "+gl.highScore);
 	}
 	
+	/**
+	 * Updates the view on those parts which have changed.
+	 */
 	void updateView() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -160,6 +179,9 @@ public class Worm extends JFrame {
 		});
 	}
 	
+	/**
+	 * Forces update of the whole view.
+	 */
 	void forceUpdateView() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {

@@ -1,5 +1,11 @@
+/*
+ * A simple worm game, game loop routines.
+ * (C) 2009, Mikko Nummelin
+ */
+
 package worm;
 
+import java.io.*;
 import java.util.*;
 
 public class GameLoop extends Thread {
@@ -12,13 +18,35 @@ public class GameLoop extends Thread {
 	int state=START;
 	int score, highScore;
 	
+	/**
+	 * Game loop object creation. Called only once during program execution.
+	 * @param gui	The GUI
+	 * @param menuActions	GUI menu action listener
+	 * @param keyActions	Key action listener
+	 */
 	public GameLoop(Worm gui, MenuActions menuActions, KeyActions keyActions) {
 		this.gui=gui;
 		this.menuActions=menuActions;
 		this.keyActions=keyActions;
-		highScore=0;
+
+		/* High score is load from file named "worm.highscore.xml"
+		 * in users home directory */
+		String homeDirectory=System.getProperty("user.home");
+		try {
+			FileInputStream fis=
+				new FileInputStream(homeDirectory+"/worm.highscore.xml");
+			Properties props=new Properties();
+			props.loadFromXML(fis);
+			fis.close();
+			highScore=Integer.parseInt(props.getProperty("worm.highscore"));
+		} catch(Exception ex) {
+			highScore=0;
+		}
 	}
-	
+
+	/**
+	 * Starts the game loop in the beginning and after GAME OVER
+	 */
 	public void run() {
 		wormDirection=RIGHT;
 		keyActions.right=keyActions.left=keyActions.up=keyActions.down=false;
@@ -91,6 +119,24 @@ public class GameLoop extends Thread {
 		case 'w':
 			gui.drawGameOver();
 			state=GAME_OVER;
+
+			/* High score is stored into file named "worm.highscore.xml"
+			 * in users home directory */
+			String homeDirectory=System.getProperty("user.home");
+			Properties props=new Properties();
+			try {
+				FileInputStream fis=new FileInputStream(homeDirectory+
+					"/worm.highscore.xml");
+				props.loadFromXML(fis);
+				fis.close();
+			} catch (Exception ex) {}
+			props.setProperty("worm.highscore",""+highScore);
+			try {
+				FileOutputStream fos=new FileOutputStream(homeDirectory+
+					"/worm.highscore.xml");
+				props.storeToXML(fos,"High score of worm game.");
+				fos.close();
+			} catch (Exception ex) {}
 			run();
 		case 'f':
 			lengthen=2;

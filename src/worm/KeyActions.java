@@ -1,3 +1,8 @@
+/*
+ * A simple worm game, keyboard listener.
+ * (C) 2009, Mikko Nummelin
+ */
+
 package worm;
 
 import java.awt.event.*;
