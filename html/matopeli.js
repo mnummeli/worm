@@ -38,12 +38,11 @@ $(document).ready(function () {
                 ctx.fillRect(10 * brickList[i][0],
                         10 * brickList[i][1], 10, 10);
             }
-            /*
             var wormHead = wormList.shift();
             if (direction === 'up') {
                 wormHead[1]--;
             }
-            */
+            wormList.push(wormHead);
             ctx.fillStyle = "#00ff00";
             for (var i = 0; i < wormList.length; i++) {
                 ctx.beginPath();
