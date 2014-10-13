@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html onkeydown="keydown(event);" onkeyup="keyup(event);">
+<html>
     <head>
         <title>Matopeli</title>
         <meta charset="UTF-8"/>
         <link type="text/css" rel="stylesheet" href="style.css"/>
+        <script src="jquery-2.1.1.min.js"></script>
+        <script src="matopeli.js"></script>
     </head>
     <body>
         <div class="header">
@@ -11,7 +13,8 @@
         </div>
         <div class="main-content">
             <canvas id="game" width="480" height="510"></canvas>
+            <p>Keydown: <span id="kd"/></p>
+            <p>Keyup: <span id="ku"/></p>
         </div>
-        <script src="matopeli.js"></script>
     </body>
 </html>

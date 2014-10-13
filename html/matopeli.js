@@ -1,34 +1,67 @@
-function model() {
-    var state=0, high_score=0;
-    var score, wormNodes, fruits, bonusFruits;
-}
+$(document).ready(function () {
+    function stateChange() {
+        if (state === 'startLoop') {
+            setTimeout(startLoop, 100);
+        } else if (state === 'gameLoop') {
+            setTimeout(gameLoop, 100);
+        }
+    }
 
-model.prototype.initGame = function() {
-    wormNodes=[[8,8]];
-    fruits=[];
-    bonusFruits=[];
-    score=0;
-};
+    function startLoop() {
+        if (state === 'startLoop') {
+            ctx.fillStyle = flashColors[idx++ % 6];
+            ctx.fillText("Paina ENTER aloittaaksesi", 50, 200);
+            stateChange();
+        }
+    }
 
-function keydown(e) {
-    
-}
+    function initGame() {
+        brickList = [];
+        for (var i = 0; i < 48; i++) {
+            brickList.push([i, 0]);
+            brickList.push([i, 47]);
+            if ((i > 0) && (i < 47)) {
+                brickList.push([0, i]);
+                brickList.push([47, i]);
+            }
+        }
+    }
 
-function keyup(e) {
-    
-}
+    function gameLoop() {
+        if (state === 'gameLoop') {
+            ctx.fillStyle = "#000000";
+            ctx.fillRect(0, 0, 480, 510);
+            ctx.fillStyle = "#7f0000";
+            for (var i = 0; i < brickList.length; i++) {
+                ctx.fillRect(10 * brickList[i][0], 10 * brickList[i][1], 10, 10);
+            }
+            stateChange();
+        }
+    }
 
-var flashColors=["#ff0000", "#ff7f00", "#ffff00", "#00ff00", "#0000ff", "#ff00ff"];
-var cnv=document.getElementById('game');
-var ctx=cnv.getContext("2d");
-ctx.fillStyle="#ffffff";
-ctx.font = "25px Monospace";
-var idx=0;
+    $(document).keydown(function (e) {
+        $('#kd').html(e.which);
+        if (e.which === 13) {
+            $('#game').fadeOut(1000);
+            ctx.fillStyle = "#000000";
+            ctx.fillRect(0, 0, 480, 510);
+            initGame();
+            $('#game').fadeIn(1000);
+            state = 'gameLoop';
+            stateChange();
+        }
+    });
 
-// Alkuruutu
-setInterval(function() {
-    ctx.fillStyle=flashColors[idx++%6];
-    ctx.fillText("Paina ENTER aloittaaksesi",50,200);
-},100);
+    $(document).keyup(function (e) {
+        $('#ku').html(e.which);
+    });
 
-// Peli
+    var flashColors = ["#ff0000", "#ff7f00", "#ffff00", "#00ff00", "#0000ff", "#ff00ff"];
+    var cnv = $('#game')[0];
+    var ctx = cnv.getContext("2d");
+    ctx.font = "25px Monospace";
+    var idx = 0;
+    var state = 'startLoop';
+    var brickList;
+    stateChange();
+});
