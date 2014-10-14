@@ -1,30 +1,25 @@
 * {
-    background-color: steelblue;
-    color: white;
     font-family: Georgia, Times New Roman, Times, serif;
     margin: 0;
     padding: 0;
 }
 
 div.header {
+    background-color: steelblue;
+    color: white;
     height: 30mm;
 }
 
 div.header > h1 {
     font-size: 10mm;
     padding: 8mm;
-    text-align: center;
-}
-
-div.main-content {
-    width: 560px;
-    min-height: 800px;
-    background-color: white;
-    color: black;
-    margin: 0px auto;
 }
 
 #game {
+    margin: 5mm;
     background-color: black;
-    margin: 10mm;
+}
+
+p {
+    margin: 3mm 5mm;
 }

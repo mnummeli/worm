@@ -27,6 +27,16 @@ $(document).ready(function () {
         }
         wormList = [[24, 24]];
         direction = 'up';
+        lengthen = 2;
+    }
+
+    function indexOfNode(node, list) {
+        for (var i = 0; i < list.length; i++) {
+            if (node[0] === list[i][0] && node[1] === list[i][1]) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     function gameLoop() {
@@ -38,8 +48,9 @@ $(document).ready(function () {
                 ctx.fillRect(10 * brickList[i][0],
                         10 * brickList[i][1], 10, 10);
             }
-            var wormHead = wormList.shift();
-            switch(direction) {
+            var wormHead = [wormList[wormList.length - 1][0],
+                wormList[wormList.length - 1][1]];
+            switch (direction) {
                 case 'left':
                     wormHead[0]--;
                     break;
@@ -54,12 +65,20 @@ $(document).ready(function () {
                     break;
             }
             wormList.push(wormHead);
+            if (lengthen > 0) {
+                lengthen--;
+            } else {
+                wormList.shift();
+            }
             ctx.fillStyle = "#00ff00";
             for (var i = 0; i < wormList.length; i++) {
                 ctx.beginPath();
-                ctx.arc(10 * wormList[i][0], 10 * wormList[i][1],
+                ctx.arc(10 * wormList[i][0]+5, 10 * wormList[i][1]+5,
                         5, 0, 2 * Math.PI);
                 ctx.fill();
+            }
+            if (indexOfNode(wormHead, brickList) > -1) {
+                state = 'startLoop';
             }
             stateChange();
         }
@@ -84,13 +103,13 @@ $(document).ready(function () {
                 break;
             case 'gameLoop':
                 if (e.which === 37 && direction !== 'right') {
-                    direction='left';
-                } else if(e.which === 38 && direction !== 'down') {
-                    direction='up';
-                } else if(e.which === 39 && direction !== 'left') {
-                    direction='right';
-                } else if(e.which === 40 && direction !== 'up') {
-                    direction='down';
+                    direction = 'left';
+                } else if (e.which === 38 && direction !== 'down') {
+                    direction = 'up';
+                } else if (e.which === 39 && direction !== 'left') {
+                    direction = 'right';
+                } else if (e.which === 40 && direction !== 'up') {
+                    direction = 'down';
                 }
                 break;
         }
@@ -107,6 +126,6 @@ $(document).ready(function () {
     ctx.font = "25px Monospace";
     var idx = 0;
     var state = 'startLoop';
-    var brickList, wormList, direction;
+    var brickList, wormList, direction, lengthen;
     stateChange();
 });
