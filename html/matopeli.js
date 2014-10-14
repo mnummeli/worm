@@ -39,8 +39,19 @@ $(document).ready(function () {
                         10 * brickList[i][1], 10, 10);
             }
             var wormHead = wormList.shift();
-            if (direction === 'up') {
-                wormHead[1]--;
+            switch(direction) {
+                case 'left':
+                    wormHead[0]--;
+                    break;
+                case 'up':
+                    wormHead[1]--;
+                    break;
+                case 'right':
+                    wormHead[0]++;
+                    break;
+                case 'down':
+                    wormHead[1]++;
+                    break;
             }
             wormList.push(wormHead);
             ctx.fillStyle = "#00ff00";
@@ -56,14 +67,32 @@ $(document).ready(function () {
 
     $(document).keydown(function (e) {
         $('#kd').html(e.which);
-        if (e.which === 13) {
-            $('#game').fadeOut(1000);
-            ctx.fillStyle = "#000000";
-            ctx.fillRect(0, 0, 480, 510);
-            initGame();
-            $('#game').fadeIn(1000);
-            state = 'gameLoop';
-            stateChange();
+        switch (state) {
+            case 'startLoop':
+                if (e.which === 13) {
+                    $('#game').fadeOut(1000, function () {
+                        state = 'x';
+                        ctx.fillStyle = "#000000";
+                        ctx.fillRect(0, 0, 480, 510);
+                        initGame();
+                        $('#game').fadeIn(1000, function () {
+                            state = 'gameLoop';
+                            stateChange();
+                        });
+                    });
+                }
+                break;
+            case 'gameLoop':
+                if (e.which === 37 && direction !== 'right') {
+                    direction='left';
+                } else if(e.which === 38 && direction !== 'down') {
+                    direction='up';
+                } else if(e.which === 39 && direction !== 'left') {
+                    direction='right';
+                } else if(e.which === 40 && direction !== 'up') {
+                    direction='down';
+                }
+                break;
         }
     });
 
