@@ -112,8 +112,9 @@ $(document).ready(function () {
                         5, 0, 2 * Math.PI);
                 ctx.fill();
             }
-            ctx.fillStyle = "#ffff00";
+            
             for (var i = 0; i < bonusFruitList.length; i++) {
+                ctx.fillStyle = flashColors[(idx++ % 6)+i];
                 ctx.beginPath();
                 ctx.arc(10 * bonusFruitList[i][0] + 5, 10 * bonusFruitList[i][1] + 5,
                         5, 0, 2 * Math.PI);
