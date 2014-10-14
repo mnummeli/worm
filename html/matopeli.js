@@ -14,9 +14,23 @@ $(document).ready(function () {
             stateChange();
         }
     }
+    
+    function addFruit() {
+        var x=0, y=0;
+        fruitCandidate=[x,y];
+        while(indexOfNode(fruitCandidate, brickList) > -1 ||
+                indexOfNode(fruitCandidate, wormList) > -1 ||
+                indexOfNode(fruitCandidate, fruitList) > -1 ) {
+            x=Math.floor(1+Math.random()*46);
+            y=Math.floor(1+Math.random()*46);
+            fruitCandidate=[x,y];
+        }
+        fruitList.push([x,y]);
+    }
 
     function initGame() {
         brickList = [];
+        fruitList = [];
         for (var i = 0; i < 48; i++) {
             brickList.push([i, 0]);
             brickList.push([i, 47]);
@@ -28,6 +42,7 @@ $(document).ready(function () {
         wormList = [[24, 24]];
         direction = 'up';
         lengthen = 2;
+        addFruit();
     }
 
     function indexOfNode(node, list) {
@@ -37,6 +52,10 @@ $(document).ready(function () {
             }
         }
         return -1;
+    }
+    
+    function gameOver() {
+        state = 'startLoop';
     }
 
     function gameLoop() {
@@ -77,9 +96,25 @@ $(document).ready(function () {
                         5, 0, 2 * Math.PI);
                 ctx.fill();
             }
-            if (indexOfNode(wormHead, brickList) > -1) {
-                state = 'startLoop';
+            ctx.fillStyle = "#007fff";
+            for (var i = 0; i < fruitList.length; i++) {
+                ctx.beginPath();
+                ctx.arc(10 * fruitList[i][0]+5, 10 * fruitList[i][1]+5,
+                        5, 0, 2 * Math.PI);
+                ctx.fill();
             }
+            
+            if (indexOfNode(wormHead, brickList) > -1) {
+                gameOver();
+            }
+            
+            var fruitIdx=indexOfNode(wormHead, fruitList);
+            if (fruitIdx > -1) {
+                addFruit();
+                lengthen+=2;
+                fruitList.splice(fruitIdx, 1);
+            }
+            
             stateChange();
         }
     }
@@ -126,6 +161,6 @@ $(document).ready(function () {
     ctx.font = "25px Monospace";
     var idx = 0;
     var state = 'startLoop';
-    var brickList, wormList, direction, lengthen;
+    var brickList, wormList, fruitList, direction, lengthen;
     stateChange();
 });
