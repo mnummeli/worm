@@ -43,6 +43,7 @@ $(document).ready(function () {
         wormList = [[24, 24]];
         direction = 'up';
         lengthen = 2;
+        score = 0;
         addFruit();
     }
 
@@ -120,6 +121,9 @@ $(document).ready(function () {
                         5, 0, 2 * Math.PI);
                 ctx.fill();
             }
+            
+            ctx.fillStyle = "#ffffff";
+            ctx.fillText("Pisteet: "+score, 10, 504);
 
             if (indexOfNode(wormHead, brickList) > -1) {
                 gameOver();
@@ -130,16 +134,18 @@ $(document).ready(function () {
             if (bonusFruitIdx > -1) {
                 addFruit();
                 lengthen += 2;
+                score++;
                 bonusFruitList.splice(fruitIdx, 1);
             } else if ((wormHeadIdx > -1) &&
                     (wormHeadIdx !== (wormList.length - 1))) {
                 gameOver();
             }
-            
+
             var fruitIdx = indexOfNode(wormHead, fruitList);
             if (fruitIdx > -1) {
                 addFruit();
                 lengthen += 2;
+                score++;
                 bonusFruitList.push([fruitList[fruitIdx][0],
                     fruitList[fruitIdx][1]]);
                 fruitList.splice(fruitIdx, 1);
@@ -192,6 +198,7 @@ $(document).ready(function () {
     ctx.font = "25px Monospace";
     var idx = 0;
     var state = 'startLoop';
-    var brickList, wormList, fruitList, bonusFruitList, direction, lengthen;
+    var brickList, wormList, fruitList, bonusFruitList, direction, lengthen,
+            score;
     stateChange();
 });
