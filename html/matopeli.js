@@ -135,7 +135,7 @@ $(document).ready(function () {
                 addFruit();
                 lengthen += 2;
                 score++;
-                bonusFruitList.splice(fruitIdx, 1);
+                bonusFruitList.splice(bonusFruitIdx, 1);
             } else if ((wormHeadIdx > -1) &&
                     (wormHeadIdx !== (wormList.length - 1))) {
                 gameOver();
