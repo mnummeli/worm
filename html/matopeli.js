@@ -112,9 +112,9 @@ $(document).ready(function () {
                         5, 0, 2 * Math.PI);
                 ctx.fill();
             }
-            
+
             for (var i = 0; i < bonusFruitList.length; i++) {
-                ctx.fillStyle = flashColors[(idx++ % 6)+i];
+                ctx.fillStyle = flashColors[(idx++ % 6) + i];
                 ctx.beginPath();
                 ctx.arc(10 * bonusFruitList[i][0] + 5, 10 * bonusFruitList[i][1] + 5,
                         5, 0, 2 * Math.PI);
@@ -125,6 +125,17 @@ $(document).ready(function () {
                 gameOver();
             }
 
+            var bonusFruitIdx = indexOfNode(wormHead, bonusFruitList);
+            var wormHeadIdx = indexOfNode(wormHead, wormList);
+            if (bonusFruitIdx > -1) {
+                addFruit();
+                lengthen += 2;
+                bonusFruitList.splice(fruitIdx, 1);
+            } else if ((wormHeadIdx > -1) &&
+                    (wormHeadIdx !== (wormList.length - 1))) {
+                gameOver();
+            }
+            
             var fruitIdx = indexOfNode(wormHead, fruitList);
             if (fruitIdx > -1) {
                 addFruit();
