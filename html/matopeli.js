@@ -3,7 +3,7 @@ $(document).ready(function () {
         if (state === 'startLoop') {
             setTimeout(startLoop, 100);
         } else if (state === 'gameLoop') {
-            setTimeout(gameLoop, 100);
+            setTimeout(gameLoop, 3000.0/(30.0+score));
         }
     }
 
@@ -199,6 +199,6 @@ $(document).ready(function () {
     var idx = 0;
     var state = 'startLoop';
     var brickList, wormList, fruitList, bonusFruitList, direction, lengthen,
-            score;
+            score=0;
     stateChange();
 });
